@@ -31,7 +31,7 @@ jobs:
         username: ${{ secrets.EC2_USER }}
         key: ${{ secrets.EC2_SSH_KEY }}
         source: "build/*"
-        target: "${{ secrets.TARGET_DIR }}/build"
+        target: "${{ secrets.TARGET_DIR }}"
 
     - name: Reload Nginx
       uses: appleboy/ssh-action@master
