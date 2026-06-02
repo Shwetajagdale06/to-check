@@ -1,0 +1,31 @@
+name: PR Merge Notification
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  notify:
+    if: github.event.pull_request.merged == true &&
+        github.event.pull_request.base.ref == 'development'
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Send Google Chat Notification
+        run: |
+          curl -X POST "${{ secrets.GOOGLE_CHAT_DEV_WEBHOOK }}" \
+          -H "Content-Type: application/json" \
+          -d "{
+            \"text\": \"✅ Pull Request Merged
+
+            Repository: ${{ github.repository }}
+            PR: #${{ github.event.pull_request.number }}
+            Title: ${{ github.event.pull_request.title }}
+            Merged By: ${{ github.event.pull_request.merged_by.login }}
+            Author: ${{ github.event.pull_request.user.login }}
+
+            Branch:
+            ${{ github.event.pull_request.head.ref }} → ${{ github.event.pull_request.base.ref }}
+            \"
+          }"
